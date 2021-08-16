@@ -1,2 +1,2 @@
 # SNOOTY
-SNOOTY: smoothing and evaluation for data analysis
+SNOOTY: Smoothing aNd evaluatiOn fOr daTa analYsis
