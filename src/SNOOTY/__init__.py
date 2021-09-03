@@ -11,21 +11,18 @@ import pandas as pd
 
 def smooth(data, smooth_size, before, after):
     """
-    Smoothing data using R functions
-
-    The normal column is used to calculate a smooth value using the slide_index_dbl from R language.
-    After that it's made a time dependent linear interpolation applied to all columns
+    
+    Each column is used to calculate a smooth value using the slide_index_dbl from R language. After that it's made a time dependent linear interpolation applied to all columns
     
     Parameters
     ----------
-    data = datafram which has a time column and a normal column.
+    data --> dataframe which needs a time column and at least another column to be smoothed.
     
 
-    before --> trata-se da quantidade de células anteriores à célula atual que serão aglutinadas a esta no processo de slide window.
+    before, afeter --> represents the number of values before or after the current cell to include in the sliding window.
 
-    after --> trata-se da quantidade de células posteriores à célula atual que serão aglutinadas a esta no processo de slide window.
+    smooth size --> it's the interval's size between two consecutive cells. This value refers to some variable chosen as a reference, in this case, we've chosen time.
 
-    smooth size --> trata-se do tamanho do intervalo entre duas células consecutivas. O valor se refere a alguma variável que é escolhida como referência. No caso do experimento, foi escolhido o tempo.
 
     """
     r_function_str = """
