@@ -35,31 +35,23 @@ def smooth(data, smooth_size, before, after):
         suppressMessages(library(tidyverse))
         suppressMessages(library(slider))
 
-        #Smooth the data:
-        data <- 
-            data %>%
-            mutate(smooth = slide_index_dbl(normal, time, mean, .before = before, .after = before))
-
-        
         ntime <- seq(min(data$time), max(data$time), by = smooth_size)
-        ndata <- tibble(time = ntime, value = approx(data$time, data$smooth, ntime)$y)
+        ndata <- tibble(time = ntime)
         names <- colnames(data)
-        names <- names[names != 'time' & names != 'normal' & names != 'smooth']
-        
-        
+        names <- names[names != 'time']
+
+
         for(name in names){
-            ndata <- ndata %>% mutate(approx(data$time, data[[name]], ntime)$y)
+        #Smooth the data:
+            smooth <- slide_index_dbl(data[[name]], data$time, mean, .before = before, .after = after)
+            ndata <- ndata %>% mutate( "{name}" := approx(data$time, smooth, ntime)$y)
         }
-        
-        #Change col names:
-        naming <- function(x){
-                return (paste('alt', x))
-        }
-        alt_names <- lapply(1:(length(ndata)-2), naming)
-        colnames(ndata) <- c("time", "value", alt_names)
-        
+
+     
+        colnames(ndata) <- c("time", names)
+
         return(ndata)
-    }
+}
 
 
 """
