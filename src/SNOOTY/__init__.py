@@ -7,7 +7,7 @@ import rpy2.robjects.numpy2ri as numpy2ri
 import rpy2.robjects. pandas2ri as pandas2ri
 from rpy2.robjects.packages import STAP
 import rpy2.robjects as ro
-
+import pandas as pd
 
 def smooth(data, smooth_size, before, after):
     """
@@ -32,8 +32,8 @@ def smooth(data, smooth_size, before, after):
 
     smooth <- function(data, smooth_size, before, after) {
 
-        library(tidyverse)
-        library(slider)
+        suppressMessages(library(tidyverse))
+        suppressMessages(library(slider))
 
         #Smooth the data:
         data <- 
@@ -114,27 +114,46 @@ def mean_squared_error(pd_series, reference_value):
     return mean_squared_error_value
 
 def mean(row, rolling_array, window_in, *kwargs):
-    row['window_{}_mean'.format(window_in)] = rolling_array.mean()
+    row['mean'.format(window_in)] = rolling_array.mean()
 
 def median(row, rolling_array, window_in, *args):
-    row['window_{}_median'.format(window_in)] = rolling_array.quantile(0.5)
+    row['median'.format(window_in)] = rolling_array.quantile(0.5)
 
 def first_quartile(row, rolling_array, window_in, *args):
-    row['window_{}_1rst_quartile'.format(window_in)] = rolling_array.quantile(0.25)
+    row['1rst_quartile'.format(window_in)] = rolling_array.quantile(0.25)
 
 def third_quartile(row, rolling_array, window_in, *args):
-    row['window_{}_3rd_quartile'.format(window_in)] = rolling_array.quantile(0.75)
+    row['3rd_quartile'.format(window_in)] = rolling_array.quantile(0.75)
 
 def max_function(row, rolling_array, window_in, *args):
-    row['window_{}_max'.format(window_in)]  = rolling_array.max()
+    row['max'.format(window_in)]  = rolling_array.max()
 
 def min_function(row, rolling_array, window_in, *args):
-    row['window_{}_min'.format(window_in)]  = rolling_array.min()
+    row['min'.format(window_in)]  = rolling_array.min()
 
 def mse_value(row, rolling_array, window_in, mean_squared_error_value):
     row['mean_squared_error'] = mean_squared_error_value
 
 def evaluate(pd_series, reference_value, window_in, evaluate_op):
+    """
+        evaluate(pd_series (Data Series), reference_value (float), window_in (float), evaluate_op (float))
+
+        The function receives a Data Series, a reference value for calculate the mean square error and a windowing size. Then you can select what operation it is desired to be returned.
+
+        pd_series = Pandas Series
+        reverence_value = a reference float value for mean square error and others operations
+
+        window_in = windowing float size
+
+        evaluate_op = list that selects which operation should be returned
+                possible values: 
+                                mean, 1q, 3q, max, min, mse
+                                1q = first quartile
+                                3q = third quartile
+                                mse = mean square error
+    """
+
+
 
     mean_squared_error_value = mean_squared_error(pd_series, reference_value) #np_array, reference_value)
     rolling_array = pd_series.rolling(window_in).apply(mean_squared_error, raw=False, args=(reference_value,))
